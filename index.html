@@ -2,478 +2,176 @@
 <html>
 <head>
   <title>Popularity of movies released on Netflix in 2025 per week</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://unpkg.com/d3-simple-slider"></script>
-
-
-<style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
     * {
-    color: #fb181c;
-    /*  */
-    font-family: 'Inter', 'DM Sans', sans-serif;
-    font-size: 24px;
-    font-weight:700;
-    /*  */
+      color: #fb181c;
+      font-family: 'Inter', 'DM Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
     }
 
     body {
-        width: 100vw;
-        height: 100dvh;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start; 
-        max-width: 100vw;
-        max-height: 100vh;
-        overflow: hidden;
-        background-color: black;
+      width: 100vw;
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; 
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden;
+      background-color: black;
     }
 
     #container {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        height: 100dvh;
-        width: 100%;
-
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      height: 100dvh;
+      width: 100%;
     }
 
     #content {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        align-content: space-between;
-        margin-right: 40px;
-        width: fit-content; 
-        height: 100%;
-        gap: 0px;
-        top: 0;
-        left: 0;
-        z-index: 4;
-        pointer-events: none;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-content: space-between;
+      margin-right: 40px;
+      width: fit-content; 
+      height: 100%;
+      gap: 0px;
+      top: 0;
+      left: 0;
+      z-index: 4;
+      pointer-events: none;
     }
 
     #chart {
-        position: absolute;
-        /* width: 100%;
-        height: 100%; 
-        margin-right: 0px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        align-self: stretch; */
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
     }
 
     #title {
-        margin-top: 50px;
-        margin-bottom: 15px;
-        color: white;
-        font-size: 60px;
-        line-height: 1.1em;
-        width: fit-content;
-        height: fit-content;
-        stroke: black;
-        stroke-width: 3px;
+      margin-top: 50px;
+      margin-bottom: 15px;
+      color: white;
+      font-size: 60px;
+      line-height: 1.1em;
+      width: fit-content;
+      height: fit-content;
+      stroke: black;
+      stroke-width: 3px;
     }
 
     em {
-        margin-top: 0px;
-        margin-bottom: 15px;
-        color: fb181c;
-        font-style:normal;
-        font-size: 60px;
-        line-height: 1.1em;
-        width: fit-content;
-        height: fit-content;
+      margin-top: 0px;
+      margin-bottom: 15px;
+      color: fb181c;
+      font-style: normal;
+      font-size: 60px;
+      line-height: 1.1em;
+      width: fit-content;
+      height: fit-content;
     }
 
     #dates {
-        color: #FF9494;
-        font-size: 1.3em;
+      color: #FF9494;
+      font-size: 1.3em;
     }
 
     #type {
-        font-size: 1.3em;
-        color: #373942;
-        line-height: 2em;
+      font-size: 1.3em;
+      color: #ffffff;
+      line-height: 1em;
     }
 
     button {
-        font-size: 1em;
-        color: #4d5162;
-        background: none;
-        border: none;
-        pointer-events: all;
+      font-size: 1em;
+      color: #fb181c;
+      background: none;
+      border: none;
+      pointer-events: all;
     }
 
     button:hover {
-        color: #fb181c;
-        cursor: pointer;
+      color: #ff9496;
+      cursor: pointer;
     }
 
     p {
-        font-size: 16px;
-        color: #ff3235;
-        text-transform: lowercase;
-        line-height: 1.1em;
+      font-size: 16px;
+      color: #ff3235;
+      text-transform: lowercase;
+      line-height: 1.1em;
     }  
 
     span {
-        font-weight: 400;
-        font-size: 14px;
-        color: white;
+      font-weight: 400;
+      font-size: 14px;
+      color: white;
     }
 
     #slider {
-        width: fit-content;
-        pointer-events: all;
+      width: fit-content;
+      pointer-events: all;
     }
 
     #textcontent {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        margin-left: 60px;
-        background: none;
-        text-shadow: blueviolet;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      margin-left: 60px;
+      background: none;
+      text-shadow: blueviolet;
     }
 
     #sliderBox {
-        display: flex;
-        flex-direction: row;
-        width: fit-content;
-        align-items:center;
-        gap: 20px;
-        margin-left: 60px;
-        margin-bottom:80px;
+      display: flex;
+      flex-direction: row;
+      width: fit-content;
+      align-items: center;
+      gap: 20px;
+      margin-left: 60px;
+      margin-bottom: 80px;
     }
 
     .slidertext {
-        font-size: .7em;
-        color: white;
-        width: 100px;
+      font-size: .7em;
+      color: white;
+      width: 100px;
     }
-    
 
-    
-</style>
-
-
+    .custom-popup .leaflet-popup-content {
+    font-size: 12px;
+    font-weight: bold;
+    }
+  </style>
+</head>
 <body>
-    <div id="container">
-        <div id="content">
-            <div id="textcontent">
-                <div id="title" style="white-space: pre">Top 10 movies
-released on <em>Netflix</em>
-in the United States,
+  <div id="container">
+    <div id="content">
+      <div id="textcontent">
+        <div id="title" style="white-space: pre">Top 10 English <button id="mediatype">movies</button>
+released on Netflix
 each week</div>
-                <div id = "dates">Week of January 5, 2025</div>
-                <div id = "type">sized by <button id="toggle">hours viewed</button></div>
-            </div>
-            <div id="sliderBox">
-                <div class="slidertext">January 1st</div>
-                <div id="slider"></div>
-                <div class="slidertext">Today</div>
-            </div>
-            </div>
-        <div id="chart"></div>
+        <div id="dates">Week of January 5, 2025</div>
+        <div id="type">sized by <button id="toggle">hours viewed</button></div>
+      </div>
+      <div id="sliderBox">
+        <div class="slidertext">January 1st</div>
+        <div id="slider"></div>
+        <div class="slidertext">Today</div>
+      </div>
     </div>
+    <div id="chart"></div>
+  </div>
 
-    
-
-    <script>
-
-        let allData = [];
-
-        d3.csv("./weeklymovies.csv", function(d) {
-
-            d.weekly_hours_viewed = +d.weekly_hours_viewed;
-            d.weekly_views = +d.weekly_views;
-            return d;
-
-        }).then(function(data) {
-
-            allData = data;
-            const weeks = Array.from(new Set(data.map(d => d.week))).sort();
-            const initialWeek = weeks[0];
-            const initialData = data.filter(d => d.week === initialWeek);
-            createChart(initialData);
-            createSlider(data);
-
-        });
-
-    let currentData = "weekly_hours_viewed";
-    
-    const formatComma = d3.format(",");
-    const formatDate = d3.timeFormat("%B %e, %Y");
-    const parseDate = d3.timeParse("%Y-%m-%d");
-
-    function wrap(textSelection, width, titleText) {
-  
-    var words = titleText.split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.1, // ems
-        y = textSelection.attr("y") || 0,
-        tspan = textSelection.text(null)
-            .append("tspan")
-            .attr("x", 0)
-            .attr("y", y)
-            .attr("dy", "0em")
-            .style("font-size", textSelection.style("font-size"));
-
-    while (word = words.pop()) {
-        line.push(word);
-        tspan.text(line.join(" "));
-        if (tspan.node().getComputedTextLength() > width+20 && line.length > 1) {
-            line.pop();
-            tspan.text(line.join(" "));
-            line = [word];
-            tspan = textSelection.append("tspan")
-                .attr("x", 0)
-                .attr("dy", lineHeight + "em")
-                .text(word)
-            lineNumber++;
-        }
-    }
-
-    // Now center the block of tspans vertically
-    const tspans = textSelection.selectAll("tspan").nodes();
-    const totalHeight = tspans.length * lineHeight;
-    const offset = -((tspans.length - 1) / 2) * lineHeight;
-
-    tspans.forEach((tspan, i) => {
-        d3.select(tspan).attr("dy", (i === 0 ? offset : lineHeight) + "em")
-        d3.select(tspan).style("font-size", textSelection.style("font-size"));;
-    });
-}
-
-    function createSlider(data) {
-
-        const weeks = Array.from(new Set(data.map(d => d.week))).sort();
-
-        var slider = d3
-        .sliderHorizontal()
-        .min(0)
-        .max(weeks.length - 1)
-        .step(1)
-        .width(480)
-        .displayValue(false)
-        .tickFormat(i => weeks[i])
-        .ticks(weeks.length)
-        .on('onchange', val => {
-            const selectedWeek = weeks[val]; // Get the week string
-            const dateObj = parseDate(selectedWeek);
-            const formattedDate = formatDate(dateObj);
-            d3.select('#dates').text(`Week of ${formattedDate}`);
-            updateChart(data, selectedWeek); // <- Custom function to filter and update chart
-        });
-
-    d3.select('#slider')
-        .append('svg')
-        .attr('width', 500)
-        .attr('height', 50)
-        .append('g')
-        .attr('transform', 'translate(5,30)')
-        .attr('stroke-width', 0)
-        .call(slider)
-            .selectAll("text")
-            .style("font-size", "0px")
-            .style("font-weight", "400")
-            
-    }
-
-    function createChart(data) {
-
-    var chartDiv = document.getElementById("chart");
-    var width = chartDiv.clientWidth;
-    var height = chartDiv.clientHeight;
-
-    var svg = d3.select("#chart")
-    .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-    
-
-    // size scale for movies
-    var size = d3.scaleLinear()
-        .domain(d3.extent(data, d=> d[currentData]))
-        .range([50,150]);  // circle will be between 50/200 px wide
-
-    // size scale for text
-    var textSize = d3.scaleLinear()
-        .domain(d3.extent(data, d=> d[currentData]))
-        .range([12,40]);
-
-    // color palette
-    var color = d3.scaleLinear()
-        .domain(d3.extent(data, d=> d[currentData]))
-        .range(['#FF8F8F', '#fb181c']);
-
-    // tooltip 
-    var tooltip = d3.select("#chart")
-        .append("div")
-        .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("background-color", "black")
-        .style("border", "solid")
-        .style("border-width", "1px")
-        .style("border-radius", "5px")
-        .style("border-color", "white")
-        .style("padding-right", "15px")
-        .style("padding-left", "15px")
-        .style("font-size", "8px")
-        .style("font-weight", 800);
-
-
-    var mouseover = function(event, d) {
-        tooltip
-            .style("opacity", 1)
-    }
-    var mousemove = function(event, d) {
-        tooltip
-            .html('<p>' + d.show_title + '<br><span>' + formatComma(d[currentData]) + (currentData === "weekly_views" ? " views" : " hours viewed") + '</span>')
-            .style("left", (event.pageX+20) + "px")
-            .style("top", (event.pageY) + "px");
-            
-    }
-    var mouseleave = function(event, d) {
-        tooltip
-            .style("opacity", 0);
-    }
-    
-    // force simulation creation
-    var simulation = d3.forceSimulation()
-        .force("center", d3.forceCenter().x((width / 2) + 400).y(height / 2)) // Attraction to the center of the svg area
-        .force("charge", d3.forceManyBody().strength(.1)) // Nodes are attracted one each other of value is > 0
-        .force("collide", d3.forceCollide().strength(.2).radius(function(d){ return (size(d.weekly_hours_viewed)+3) }).iterations(1)) // Force that avoids circle overlapping
-    // applies forces to nodes; updates positions
-    // "Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.""
-            
-    function dragstarted(event, d) {
-        simulation.alphaTarget(0.2).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-    function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
-    function dragended(event, d) {
-        simulation.alphaTarget(0.0);
-        d.fx = null;
-        d.fy = null;
-    }
-
-    //circles
-    var node = svg.append("g")
-        .selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("class", "node")
-        .attr("r", function(d){ return size(d.weekly_hours_viewed); })
-        .attr("cx", width / 2)
-        .attr("cy", height / 2)
-        .style("fill", function(d){ return color(d.weekly_hours_viewed); })
-        .style("fill-opacity", 1)
-        .on("mouseover", mouseover)
-            .style("cursor", "grab")
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-        .call(d3.drag() // call specific function when circle is dragged
-           .on("start", dragstarted)
-           .on("drag", dragged)
-           .on("end", dragended));
-
-
-    //titles
-    var title = svg.append("g")
-        .selectAll("text")
-        .data(data)
-        .enter()
-        .append("text")
-        .attr("class", "title")
-        .attr("fill", "#FFFFFF")
-        .style("text-anchor", "middle")
-        .style("text-transform", "lowercase")
-        .style("font-weight", 800)
-        .style("font-size", function(d){ return textSize(d.weekly_hours_viewed) + "px";})
-        .on("mouseover", mouseover)
-            .style("cursor", "grab")
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-        .each(function(d) {
-        // Calculate the max width for this specific node
-        // Use the diameter (2 * radius) as the max width, slightly reduced for padding
-        const maxWidth = size(d[currentData]) - 10;
-        
-        // Use d3.select(this) to pass the current text selection 
-        // and the calculated maxWidth to the wrap function.
-        wrap(d3.select(this), maxWidth, d.show_title);
-        })
-        ;
-    
-
-    
-    simulation
-        .nodes(data)
-        .on("tick", function(){
-            node
-                .attr("cx", function(d){ return d.x; })
-                .attr("cy", function(d){ return d.y; });
-            title
-                .attr("x", function(d){ return d.x; })
-                .attr("y", function(d){ return d.y; })
-                .attr("transform", function(d){ 
-                    return "translate(" + d.x + "," + (d.y) + ")";
-                }
-                )
-        }
-    );
-
-
-    }   
-
-    function updateChart(data, selectedWeek) {
-        const filteredData = data.filter(d => d.week === selectedWeek);
-        d3.select("#chart").selectAll("*").remove();
-        createChart(filteredData);
-    }
-
-    function updateSlider(data, selectedWeek) {
-        const filteredData = data.filter(d => d.week === selectedWeek);
-        d3.select("#slider").selectAll("*").remove();
-        createSlider(filteredData);
-    }
-    
-    document.getElementById("toggle").addEventListener("click", function () {
-        currentData = currentData === "weekly_hours_viewed" ? "weekly_views" : "weekly_hours_viewed";
-        
-        this.textContent = currentData === "weekly_views" ? "views" : "hours viewed";
-
-        const currentWeek = d3.select("#dates").text().replace("Week of ", "");
-        const parsedWeek = d3.timeParse("%B %e, %Y")(currentWeek);
-        const formattedWeek = d3.timeFormat("%Y-%m-%d")(parsedWeek);
-
-        updateChart(allData, formattedWeek);
-    });
-    
-
-        // consider views as well for the sake of showing different normalization
-
-    </script>
-    </body>
-    </html> 
-
-    
-
-
-
-  
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
